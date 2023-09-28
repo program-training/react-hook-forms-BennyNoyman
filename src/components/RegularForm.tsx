@@ -1,5 +1,5 @@
 import { useForm, SubmitHandler } from "react-hook-form";
-
+import {ErrorMessage} from "@hookform/error-message";
 interface FormData {
   username: string;
   email: string;
@@ -17,35 +17,59 @@ function RegularForm() {
           id="username"
           //name="username"
           placeholder='Enter UserName'
-          {...register("username", {required: true, minLength: 2})}
-          aria-invalid={errors.username ? "true" : "false"}
+          {...register("username", {
+              required: `User name is required`,
+              minLength: {
+                  value: 2,
+                  message: `Minimum 2 chars`}
+          })}
         />
-          {errors.username?.type === 'required' && <p role="alert">User name is required</p>}
-          {errors.username?.type === 'minLength' && <p role= "alert">Minimum 2 chars</p>}
+          {errors.username && <ErrorMessage
+              errors={errors}
+              name="username"
+              render={({ message }) => <p>{message}</p>}
+          />}
       </div>
       <div>
         <input
           type="text"
           id="email"
           placeholder='Enter Email'
-          {...register("email", {required: true, pattern: /^\S+@\S+$/i})}
-          aria-invalid={errors.email ? "true" : "false"}
+          {...register("email", {
+              required: "Email is required",
+              pattern: {value: /^\S+@\S+$/i,
+              message: `Stick to Email pattern`
+              }})}
         />
-          {errors.email?.type === 'required' && <p role="alert">Email is required</p>}
-          {errors.email?.type === 'pattern' && <p role= "alert" >Stick to Email pattern</p>}
+          {errors.email && <ErrorMessage
+              errors={errors}
+              name="email"
+              render={({ message }) => <p>{message}</p>}
+          />}
       </div>
       <div>
         <input
           type="text"
           id="password"
           placeholder='Enter Password'
-          {...register("password", {required: true, minLength: 8, maxLength: 20, pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/})}
-          aria-invalid={errors.password ? "true" : "false"}
+          {...register("password", {
+              required: `Password is required`,
+              minLength:{
+                  value: 8,
+                  message: `Minimum 8 chars`
+              }, maxLength:{
+                  value: 20,
+                  message: `Max 20 chars`},
+              pattern:{
+                  value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/,
+                  message: `Password must contain: upper case letter, lower case letter, digit and a special char`
+              }})}
         />
-          {errors.password?.type === 'required' && <p role="alert">Password is required</p>}
-          {errors.password?.type === "minLength" && <p role="alert">Minimum 8 chars</p>}
-          {errors.password?.type === "maxLength" && <p role="alert">Max 20 chars</p>}
-          {errors.password?.type === 'pattern' && <p role= "alert">Password must contain upper case letter, lower case letter, digit and a special char</p>}
+          {errors.password && <ErrorMessage
+              errors={errors}
+              name="password"
+              render={({ message }) => <p>{message}</p>}
+          />}
       </div>
       <button type="submit">Submit</button>
     </form>
